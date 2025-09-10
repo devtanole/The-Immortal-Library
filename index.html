@@ -9,12 +9,12 @@
   <body>
     <div class="page-container">
       <div class="header">
-        <div class="header-title">The Immortal Library</div>
+        <div class="header-title"><h1>The Immortal Library</h1></div>
       </div>
 
       <div class="main-container">
         <dialog class="add-book-modal">
-          <form method="dialog" class="book-submit-form">
+          <form method="dialog" id="book-submit-form">
             <div class="form-entry">
               <label for="title">Title:</label>
               <input
@@ -47,6 +47,11 @@
               />
             </div>
 
+            <div class="form-entry">
+              <label for="read">Read?</label>
+              <input type="checkbox" id="read" name="read" />
+            </div>
+
             <div class="form-buttons">
               <button
                 type="button"
@@ -64,7 +69,7 @@
         <div class="book-container"></div>
       </div>
 
-      <div class="footer">Footer</div>
+      <!-- <div class="footer">Footer</div> -->
     </div>
 
     <script defer src="main.js"></script>

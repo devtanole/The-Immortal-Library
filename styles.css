@@ -1,0 +1,137 @@
+* {
+  border: 1px solid red;
+}
+
+.header {
+  background: linear-gradient(
+    90deg,
+    #000000,
+    #0f0f0f
+  ); /* subtle black gradient */
+  color: #00ff00; /* bright green text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  font-family: "Courier New", Courier, monospace; /* optional for terminal feel */
+  font-weight: bold;
+  font-size: 2rem;
+  text-shadow: 0 0 5px #00ff00; /* glow effect */
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+}
+
+html {
+  background-color: #131313;
+}
+
+button {
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #808000;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #556b2f;
+}
+
+.book-container {
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  grid-template-rows: repeat(3, 125px);
+  justify-content: center;
+  gap: 25px;
+}
+
+.book-container {
+  display: grid; /* Use grid to line up cards */
+  grid-template-columns: repeat(3, 220px);
+  grid-template-rows: repeat(3, 250px);
+  gap: 20px; /* Space between cards */
+  padding: 20px;
+  background-color: #131313;
+}
+
+.main-container {
+  background-color: #131313;
+}
+
+/* Individual book card */
+.book-card {
+  background-color: #313131;
+  color: #749b26;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 8px rgba(115, 115, 115, 0.4);
+  min-height: 150px; /* ensures uniform height */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(173, 173, 173, 0.5);
+}
+
+/* Text styling inside cards */
+.book-card p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+
+/* Remove button */
+.remove-button {
+  align-self: flex-end;
+  padding: 6px 12px;
+  background-color: #6b8e23;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.remove-button:hover {
+  background-color: #556b2f; /* darker olive on hover */
+}
+
+dialog {
+  border-radius: 8px;
+  background-color: #f6f6f6;
+}
+
+.cancel-form-button {
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+.submit-form-button {
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+.toggle-read-button {
+  padding: 6px 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+/* Read = green */
+.toggle-read-button.read {
+  background-color: #6b8e23;
+}
+
+/* Unread = gray */
+.toggle-read-button.unread {
+  background-color: #555;
+}
