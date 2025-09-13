@@ -29,7 +29,13 @@ function getLibrary() {
     library.length = 0;
     parsed.forEach((bookData) => {
       library.push(
-        new Book(bookData.title, bookData.author, bookData.pages, bookData.read)
+        new Book(
+          bookData.title,
+          bookData.author,
+          bookData.pages,
+          bookData.read,
+          bookData.thumbnail
+        )
       );
     });
   }
@@ -51,24 +57,23 @@ const confirmNo = document.getElementById("confirm-delete-no");
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 const searchResults = document.getElementById("search-results");
-
-let bookToDeleteIndex = null;
-
 const searchCloseButton = document.getElementById("search-close-button");
 
-function toggleClearButton() {
-  const hasInput = searchInput.value.trim() !== "";
-  const hasResults = searchResults.innerHTML.trim() !== "";
+let bookToDeleteIndex = null;
+let books = []; // Global search results array
 
-  if (searchInput.value.trim() !== "" || searchResults.innerHTML !== "") {
+function toggleClearButton() {
+  if (
+    searchInput.value.trim() !== "" ||
+    searchResults.innerHTML.trim() !== ""
+  ) {
     searchCloseButton.style.display = "inline";
   } else {
     searchCloseButton.style.display = "none";
   }
 }
 
-// searchInput.addEventListener("input", toggleClearButton);
-
+// Clear search input & results
 searchCloseButton.addEventListener("click", () => {
   searchInput.value = "";
   searchResults.innerHTML = "";
@@ -90,9 +95,8 @@ searchButton.addEventListener("click", async () => {
   if (!query) return;
 
   searchResults.innerHTML = "Loading...";
-
   try {
-    const books = await searchGoogleBooks(query);
+    books = await searchGoogleBooks(query);
 
     if (books.length === 0) {
       searchResults.innerHTML = "<p>No books found.</p>";
@@ -118,18 +122,31 @@ searchButton.addEventListener("click", async () => {
             <p><strong>${title}</strong> by ${authors}</p>
             <p>Pages: ${pages}</p>
             <p>ISBN: ${isbnInfo}</p>
+            <label>
+              <input type="checkbox" class="mark-read-checkbox" data-index="${index}" />
+              Mark as Read
+            </label>
             <button data-index="${index}" class="add-search-book-button">Add to Library</button>
           </div>
         `;
       })
       .join("");
 
+    // Add click listeners for all "Add to Library" buttons
     document.querySelectorAll(".add-search-book-button").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const book = books[btn.getAttribute("data-index")];
-        addBookFromGoogle(book.volumeInfo);
+        const index = btn.getAttribute("data-index");
+        const book = books[index];
+
+        const checkbox = document.querySelector(
+          `.mark-read-checkbox[data-index="${index}"]`
+        );
+        const isRead = checkbox ? checkbox.checked : false;
+
+        addBookFromGoogle(book.volumeInfo, isRead);
       });
     });
+
     toggleClearButton();
   } catch (error) {
     searchResults.innerHTML = `<p>Error fetching books: ${error.message}</p>`;
@@ -137,14 +154,14 @@ searchButton.addEventListener("click", async () => {
   }
 });
 
-function addBookFromGoogle(info) {
+function addBookFromGoogle(info, read = false) {
   const thumbnail = info.imageLinks?.thumbnail || "";
 
   const newBook = new Book(
     info.title || "Unknown Title",
     info.authors ? info.authors.join(", ") : "Unknown Author",
     info.pageCount || 0,
-    false,
+    read,
     thumbnail
   );
   library.push(newBook);
@@ -172,7 +189,7 @@ bookForm.addEventListener("submit", (e) => {
   addBook();
 });
 
-// Add Book Function
+// Add Book Function (manual)
 function addBook() {
   const title = document.getElementById("title").value.trim();
   const author = document.getElementById("author").value.trim();
@@ -196,12 +213,12 @@ function addBook() {
 // Render Library to Page
 function renderLibrary() {
   bookContainer.innerHTML = "";
-  library.forEach((book, index) => {
+  library.forEach((book) => {
     const card = document.createElement("div");
     card.classList.add("book-card");
 
     const toggleClass = book.read ? "read" : "unread";
-    const toggleText = book.read ? "Mark Unread" : " Mark Read";
+    const toggleText = book.read ? "Mark Unread" : "Mark Read";
 
     card.innerHTML = `
       <div class="book-info">
@@ -214,19 +231,19 @@ function renderLibrary() {
           book.id
         }" class="toggle-read-button ${toggleClass}">${toggleText}</button>
         <button data-id="${book.id}" class="remove-button">Remove</button>
-     </div>
-    ${
-      book.thumbnail
-        ? `<img class="book-cover" src="${book.thumbnail}" alt="Cover of ${book.title}">`
-        : ""
-    }
+      </div>
+      ${
+        book.thumbnail
+          ? `<img class="book-cover" src="${book.thumbnail}" alt="Cover of ${book.title}">`
+          : ""
+      }
     `;
 
     bookContainer.appendChild(card);
   });
 }
 
-// Event Delegation for Book Actions
+// Event Delegation for Book Actions (toggle read, remove)
 bookContainer.addEventListener("click", (e) => {
   const bookId = e.target.getAttribute("data-id");
   const bookIndex = library.findIndex((b) => b.id === bookId);
@@ -264,11 +281,6 @@ confirmNo.addEventListener("click", () => {
   confirmDialog.close();
 });
 
-// Optional: Initial seed data (can remove)
-// library.push(new Book("Dune", "Frank Herbert", 412, false));
-// library.push(
-//   new Book("Hellboy Omnibus Volume 3: The Wild Hunt", "Mike Mignola", 528, true)
-// );
-
+// Load library and render on startup
 getLibrary();
 renderLibrary();
