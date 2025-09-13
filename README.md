@@ -1,18 +1,33 @@
 # 📚 The Immortal Library
 
-A dynamic, front-end library app where books live forever — until you delete them. Built with vanilla JavaScript, this app lets users manage a personal library right in the browser.
+A sleek, interactive digital bookshelf where you can add, view, and manage books manually or by searching the Google Books API. Covers are displayed beautifully, and you can track your reading progress with ease.
 
-## ✨ Features
+---
 
-- 📖 Add custom books with title, author, page count, and read status
-- 🔁 Toggle read/unread status with a single click
-- 🗑️ Remove books from your eternal collection
-- 🧱 Built with constructor functions and prototype methods
-- 💡 DOM dynamically updates with every change
-- 📱 Responsive layout for desktop and mobile
+## 🚀 Features
 
-## 🛠️ Tech Stack
+- ✅ Add books manually via a form
+- 🔍 Search books using **Google Books API**
+- 🖼️ View high-quality cover thumbnails
+- 🧾 Hover to reveal book details
+- 📘 Toggle **Read / Unread** status
+- ❌ Remove books with confirmation
+- 💾 Persistent data with `localStorage`
+- 🌗 Dark-themed, terminal-inspired design
 
-- HTML5  
-- CSS3  
-- JavaScript (ES6)
+---
+
+## 📷 Screenshots
+
+
+
+---
+
+## 🛠️ Built With
+
+- **HTML**
+- **CSS**
+- **JavaScript**
+- [Google Books API](https://developers.google.com/books)
+
+---
