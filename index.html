@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>The Immortal Library</title>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-title">
+          <h1>The Immortal Library</h1>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-container">
+        <!-- Add Book Modal -->
+        <dialog class="add-book-modal">
+          <form method="dialog" id="book-submit-form">
+            <div class="form-entry">
+              <label for="title">Title:</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Enter book title"
+                required
+              />
+            </div>
+
+            <div class="form-entry">
+              <label for="author">Author:</label>
+              <input
+                type="text"
+                id="author"
+                name="author"
+                placeholder="Enter book author"
+                required
+              />
+            </div>
+
+            <div class="form-entry">
+              <label for="pages">Pages:</label>
+              <input
+                type="number"
+                id="pages"
+                name="pages"
+                placeholder="Enter book pages"
+                min="1"
+              />
+            </div>
+
+            <div class="form-entry">
+              <label for="read">Read?</label>
+              <input type="checkbox" id="read" name="read" />
+            </div>
+
+            <div class="form-buttons">
+              <button
+                type="button"
+                class="cancel-form-button"
+                formmethod="dialog"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="submit-form-button">Submit</button>
+            </div>
+          </form>
+        </dialog>
+
+        <!-- Add Book Button & Book Cards -->
+        <div class="search">
+          <button class="add-book-button">+ Add Manually</button>
+          <div class="search-container">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search by title or ISBN"
+            />
+            <button id="search-button">Search</button>
+            <button id="search-close-button" aria-label="Close Search">
+              x
+            </button>
+          </div>
+        </div>
+        <div id="search-results"></div>
+
+        <div class="book-container"></div>
+      </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <dialog class="confirm-delete-modal">
+      <p id="confirm-message">Are you sure you want to delete this book?</p>
+      <div class="confirm-buttons">
+        <button id="confirm-delete-yes">Yes</button>
+        <button id="confirm-delete-no">No</button>
+      </div>
+    </dialog>
+
+    <script defer src="main.js"></script>
+  </body>
+</html>
