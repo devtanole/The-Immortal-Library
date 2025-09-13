@@ -173,6 +173,12 @@ dialog {
   border-radius: 5px;
 }
 
+#search-close-button {
+  border-radius: 5px;
+  display: none;
+  cursor: pointer;
+}
+
 #search-results {
   color: #00ff00;
 }

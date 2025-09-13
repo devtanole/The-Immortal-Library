@@ -55,10 +55,21 @@ let bookToDeleteIndex = null;
 
 const searchCloseButton = document.getElementById("search-close-button");
 
+function toggleClearButton() {
+  if (searchInput.value.trim() !== "" || searchResults.innerHTML !== "") {
+    searchCloseButton.style.display = "inline";
+  } else {
+    searchCloseButton.style.display = "none";
+  }
+}
+
+searchInput.addEventListener("input", toggleClearButton);
+
 searchCloseButton.addEventListener("click", () => {
   searchInput.value = "";
   searchResults.innerHTML = "";
-  searchInput.focus(); // Optional: put cursor back in input
+  toggleClearButton();
+  searchInput.focus();
 });
 
 async function searchGoogleBooks(query) {
