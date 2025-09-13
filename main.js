@@ -1,6 +1,6 @@
 const library = [];
 
-function Book(title, author, pages, read = false) {
+function Book(title, author, pages, read = false, thumbnail = "") {
   if (!new.target) {
     throw Error("You must use 'new' operator to call constructor");
   }
@@ -9,6 +9,7 @@ function Book(title, author, pages, read = false) {
   this.author = author;
   this.pages = pages;
   this.read = read;
+  this.thumbnail = thumbnail;
 }
 
 Book.prototype.info = function () {
@@ -137,11 +138,14 @@ searchButton.addEventListener("click", async () => {
 });
 
 function addBookFromGoogle(info) {
+  const thumbnail = info.imageLinks?.thumbnail || "";
+
   const newBook = new Book(
     info.title || "Unknown Title",
     info.authors ? info.authors.join(", ") : "Unknown Author",
     info.pageCount || 0,
-    false
+    false,
+    thumbnail
   );
   library.push(newBook);
   saveLibrary();
@@ -200,11 +204,22 @@ function renderLibrary() {
     const toggleText = book.read ? "Mark Unread" : " Mark Read";
 
     card.innerHTML = `
-      <p><strong>${book.title}</strong> by ${book.author}</p>
-      <p>${book.pages} pages</p>
-      <p>Status: <span class="read-status">${toggleClass}</span></p>
-      <button data-id="${book.id}" class="toggle-read-button ${toggleClass}">${toggleText}</button>
-      <button data-id="${book.id}" class="remove-button">Remove</button>
+      <div class="book-info">
+        <p><strong>${book.title}</strong> by ${book.author}</p>
+        <p>${book.pages} pages</p>
+        <p>Status: <span class="read-status">${
+          book.read ? "Read" : "Unread"
+        }</span></p>
+        <button data-id="${
+          book.id
+        }" class="toggle-read-button ${toggleClass}">${toggleText}</button>
+        <button data-id="${book.id}" class="remove-button">Remove</button>
+     </div>
+    ${
+      book.thumbnail
+        ? `<img class="book-cover" src="${book.thumbnail}" alt="Cover of ${book.title}">`
+        : ""
+    }
     `;
 
     bookContainer.appendChild(card);
