@@ -147,6 +147,10 @@ dialog {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
+.add-search-book-button {
+  border-radius: 5px;
+}
+
 .confirm-delete-modal .form-buttons {
   display: flex;
   justify-content: space-around;

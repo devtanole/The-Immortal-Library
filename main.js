@@ -56,6 +56,9 @@ let bookToDeleteIndex = null;
 const searchCloseButton = document.getElementById("search-close-button");
 
 function toggleClearButton() {
+  const hasInput = searchInput.value.trim() !== "";
+  const hasResults = searchResults.innerHTML.trim() !== "";
+
   if (searchInput.value.trim() !== "" || searchResults.innerHTML !== "") {
     searchCloseButton.style.display = "inline";
   } else {
@@ -63,7 +66,7 @@ function toggleClearButton() {
   }
 }
 
-searchInput.addEventListener("input", toggleClearButton);
+// searchInput.addEventListener("input", toggleClearButton);
 
 searchCloseButton.addEventListener("click", () => {
   searchInput.value = "";
@@ -92,6 +95,7 @@ searchButton.addEventListener("click", async () => {
 
     if (books.length === 0) {
       searchResults.innerHTML = "<p>No books found.</p>";
+      toggleClearButton();
       return;
     }
 
@@ -125,8 +129,10 @@ searchButton.addEventListener("click", async () => {
         addBookFromGoogle(book.volumeInfo);
       });
     });
+    toggleClearButton();
   } catch (error) {
     searchResults.innerHTML = `<p>Error fetching books: ${error.message}</p>`;
+    toggleClearButton();
   }
 });
 
@@ -141,7 +147,13 @@ function addBookFromGoogle(info) {
   saveLibrary();
   renderLibrary();
 
+  searchInput.value = "";
+  searchResults.innerHTML = "";
+
+  toggleClearButton();
+
   alert(`Added "${newBook.title}" by ${newBook.author} to your library.`);
+  searchInput.focus();
 }
 
 // Open Add Book Modal
