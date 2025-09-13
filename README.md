@@ -19,6 +19,7 @@ A sleek, interactive digital bookshelf where you can add, view, and manage books
 
 ## 📷 Screenshots
 
+<img width="3584" height="2240" alt="image" src="https://github.com/user-attachments/assets/11bbb431-eb49-4e70-abea-d2734cb6c954" />
 
 
 ---
