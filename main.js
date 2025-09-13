@@ -4,6 +4,7 @@ function Book(title, author, pages, read = false) {
   if (!new.target) {
     throw Error("You must use 'new' operator to call constructor");
   }
+  this.id = crypto.randomUUID();
   this.title = title;
   this.author = author;
   this.pages = pages;
@@ -95,8 +96,8 @@ function renderLibrary() {
       <p><strong>${book.title}</strong> by ${book.author}</p>
       <p>${book.pages} pages</p>
       <p>Status: <span class="read-status">${toggleClass}</span></p>
-      <button data-index="${index}" class="toggle-read-button ${toggleClass}">${toggleText}</button>
-      <button data-index="${index}" class="remove-button">Remove</button>
+      <button data-id="${book.id}" class="toggle-read-button ${toggleClass}">${toggleText}</button>
+      <button data-id="${book.id}" class="remove-button">Remove</button>
     `;
 
     bookContainer.appendChild(card);
@@ -105,19 +106,20 @@ function renderLibrary() {
 
 // Event Delegation for Book Actions
 bookContainer.addEventListener("click", (e) => {
-  const index = e.target.getAttribute("data-index");
+  const bookId = e.target.getAttribute("data-id");
+  const bookIndex = library.findIndex((b) => b.id === bookId);
 
-  // Remove
+  if (bookIndex === -1) return;
+
   if (e.target.classList.contains("remove-button")) {
-    const book = library[index];
-    bookToDeleteIndex = index;
+    const book = library[bookIndex];
+    bookToDeleteIndex = bookIndex;
     confirmMsg.textContent = `Remove "${book.title}" by ${book.author}?`;
     confirmDialog.showModal();
   }
 
-  // Toggle Read
   if (e.target.classList.contains("toggle-read-button")) {
-    library[index].read = !library[index].read;
+    library[bookIndex].read = !library[bookIndex].read;
     saveLibrary();
     renderLibrary();
   }
