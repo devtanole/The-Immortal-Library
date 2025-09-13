@@ -47,7 +47,91 @@ const confirmMsg = document.getElementById("confirm-message");
 const confirmYes = document.getElementById("confirm-delete-yes");
 const confirmNo = document.getElementById("confirm-delete-no");
 
+const searchInput = document.getElementById("search-input");
+const searchButton = document.getElementById("search-button");
+const searchResults = document.getElementById("search-results");
+
 let bookToDeleteIndex = null;
+
+const searchCloseButton = document.getElementById("search-close-button");
+
+searchCloseButton.addEventListener("click", () => {
+  searchInput.value = "";
+  searchResults.innerHTML = "";
+  searchInput.focus(); // Optional: put cursor back in input
+});
+
+async function searchGoogleBooks(query) {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+    query
+  )}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.items || [];
+}
+
+searchButton.addEventListener("click", async () => {
+  const query = searchInput.value.trim();
+  if (!query) return;
+
+  searchResults.innerHTML = "Loading...";
+
+  try {
+    const books = await searchGoogleBooks(query);
+
+    if (books.length === 0) {
+      searchResults.innerHTML = "<p>No books found.</p>";
+      return;
+    }
+
+    searchResults.innerHTML = books
+      .slice(0, 5)
+      .map((book, index) => {
+        const info = book.volumeInfo;
+        const title = info.title || "No title";
+        const authors = info.authors
+          ? info.authors.join(", ")
+          : "Unknown author";
+        const pages = info.pageCount || "N/A";
+        const isbnInfo = info.industryIdentifiers
+          ? info.industryIdentifiers.map((id) => id.identifier).join(", ")
+          : "N/A";
+
+        return `
+          <div class="search-result">
+            <p><strong>${title}</strong> by ${authors}</p>
+            <p>Pages: ${pages}</p>
+            <p>ISBN: ${isbnInfo}</p>
+            <button data-index="${index}" class="add-search-book-button">Add to Library</button>
+          </div>
+        `;
+      })
+      .join("");
+
+    document.querySelectorAll(".add-search-book-button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const book = books[btn.getAttribute("data-index")];
+        addBookFromGoogle(book.volumeInfo);
+      });
+    });
+  } catch (error) {
+    searchResults.innerHTML = `<p>Error fetching books: ${error.message}</p>`;
+  }
+});
+
+function addBookFromGoogle(info) {
+  const newBook = new Book(
+    info.title || "Unknown Title",
+    info.authors ? info.authors.join(", ") : "Unknown Author",
+    info.pageCount || 0,
+    false
+  );
+  library.push(newBook);
+  saveLibrary();
+  renderLibrary();
+
+  alert(`Added "${newBook.title}" by ${newBook.author} to your library.`);
+}
 
 // Open Add Book Modal
 addBookBtn.addEventListener("click", () => addBookDialog.showModal());

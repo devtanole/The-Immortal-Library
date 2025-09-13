@@ -72,7 +72,22 @@
         </dialog>
 
         <!-- Add Book Button & Book Cards -->
-        <button class="add-book-button">+ Add Book</button>
+        <div class="search">
+          <button class="add-book-button">+ Add Book</button>
+          <div class="search-container">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search by title or ISBN"
+            />
+            <button id="search-button">Search</button>
+            <button id="search-close-button" aria-label="Close Search">
+              ✖️
+            </button>
+          </div>
+        </div>
+        <div id="search-results"></div>
+
         <div class="book-container"></div>
       </div>
     </div>
