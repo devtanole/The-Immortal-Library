@@ -71,8 +71,8 @@ button:hover {
 }  */
 
 .book-card {
-  width: 160px; /* or wider if you want */
-  height: 250px; /* taller to fit the whole cover */
+  width: 160px;
+  height: 250px;
   border-radius: 4px; /* smaller radius or 0 to avoid clipping */
   overflow: visible; /* allow image to show fully */
   position: relative;
@@ -158,6 +158,10 @@ button:hover {
 .book-card p {
   margin: 4px 0;
   font-size: 0.95rem;
+}
+
+.search-result {
+  border: 2px solid white;
 }
 
 /* Remove button */
