@@ -8,7 +8,6 @@ function Book(title, author, pages, read = false) {
   this.author = author;
   this.pages = pages;
   this.read = read;
-  console.log(`new Book: ${this.title} by ${this.author}`);
 }
 
 Book.prototype.info = function () {
@@ -17,11 +16,51 @@ Book.prototype.info = function () {
   }`;
 };
 
-library.push(new Book("Dune", "Frank Herbert", 412, false));
-library.push(
-  new Book("Hellboy Omnibus Volume 3: The Wild Hunt", "Mike Mignola", 528, true)
-);
+function saveLibrary() {
+  localStorage.setItem("library", JSON.stringify(library));
+}
 
+function getLibrary() {
+  const stored = localStorage.getItem("library");
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    library.length = 0;
+    parsed.forEach((bookData) => {
+      library.push(
+        new Book(bookData.title, bookData.author, bookData.pages, bookData.read)
+      );
+    });
+  }
+}
+
+// DOM Elements
+const addBookBtn = document.querySelector(".add-book-button");
+const addBookDialog = document.querySelector(".add-book-modal");
+const bookForm = document.getElementById("book-submit-form");
+const bookContainer = document.querySelector(".book-container");
+const cancelFormButton = document.querySelector(".cancel-form-button");
+
+// Confirm Delete Modal Elements
+const confirmDialog = document.querySelector(".confirm-delete-modal");
+const confirmMsg = document.getElementById("confirm-message");
+const confirmYes = document.getElementById("confirm-delete-yes");
+const confirmNo = document.getElementById("confirm-delete-no");
+
+let bookToDeleteIndex = null;
+
+// Open Add Book Modal
+addBookBtn.addEventListener("click", () => addBookDialog.showModal());
+
+// Cancel Add Book Modal
+cancelFormButton.addEventListener("click", () => addBookDialog.close());
+
+// Submit Form
+bookForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  addBook();
+});
+
+// Add Book Function
 function addBook() {
   const title = document.getElementById("title").value.trim();
   const author = document.getElementById("author").value.trim();
@@ -35,60 +74,77 @@ function addBook() {
 
   const newBook = new Book(title, author, pages, read);
   library.push(newBook);
+  saveLibrary();
   renderLibrary();
 
-  document.getElementById("book-submit-form").reset();
-  document.querySelector("dialog").close();
+  bookForm.reset();
+  addBookDialog.close();
 }
 
+// Render Library to Page
 function renderLibrary() {
-  const container = document.querySelector(".book-container");
-  container.innerHTML = "";
+  bookContainer.innerHTML = "";
   library.forEach((book, index) => {
     const card = document.createElement("div");
     card.classList.add("book-card");
 
     const toggleClass = book.read ? "read" : "unread";
-    const toggleText = book.read ? "Read" : "Unread";
+    const toggleText = book.read ? "Mark Unread" : " Mark Read";
 
     card.innerHTML = `
       <p><strong>${book.title}</strong> by ${book.author}</p>
       <p>${book.pages} pages</p>
-      <p>Status: <span class="read-status">${
-        book.read ? "Read" : "Not read"
-      }</span></p>
+      <p>Status: <span class="read-status">${toggleClass}</span></p>
       <button data-index="${index}" class="toggle-read-button ${toggleClass}">${toggleText}</button>
       <button data-index="${index}" class="remove-button">Remove</button>
     `;
 
-    container.appendChild(card);
+    bookContainer.appendChild(card);
   });
 }
 
-document.querySelector(".book-container").addEventListener("click", (e) => {
+// Event Delegation for Book Actions
+bookContainer.addEventListener("click", (e) => {
   const index = e.target.getAttribute("data-index");
 
+  // Remove
   if (e.target.classList.contains("remove-button")) {
-    library.splice(index, 1);
-    renderLibrary();
+    const book = library[index];
+    bookToDeleteIndex = index;
+    confirmMsg.textContent = `Remove "${book.title}" by ${book.author}?`;
+    confirmDialog.showModal();
   }
 
+  // Toggle Read
   if (e.target.classList.contains("toggle-read-button")) {
     library[index].read = !library[index].read;
-    renderLibrary(); // re-render to reflect change
+    saveLibrary();
+    renderLibrary();
   }
 });
 
-document.getElementById("book-submit-form").addEventListener("submit", (e) => {
-  e.preventDefault(); // Prevent default dialog behavior
-  addBook();
+// Confirm Deletion
+confirmYes.addEventListener("click", () => {
+  if (bookToDeleteIndex !== null) {
+    library.splice(bookToDeleteIndex, 1);
+    saveLibrary();
+    renderLibrary();
+    bookToDeleteIndex = null;
+  }
+  confirmDialog.close();
 });
 
-const dialog = document.querySelector(".add-book-modal");
-const addBookBtn = document.querySelector(".add-book-button");
-const cancelBtn = document.querySelector(".cancel-form-button");
+// Cancel Deletion
+confirmNo.addEventListener("click", () => {
+  bookToDeleteIndex = null;
+  confirmDialog.close();
+});
 
-addBookBtn.addEventListener("click", () => dialog.showModal());
-cancelBtn.addEventListener("click", () => dialog.close());
+// Optional: Initial seed data (can remove)
+// library.push(new Book("Dune", "Frank Herbert", 412, false));
+// library.push(
+//   new Book("Hellboy Omnibus Volume 3: The Wild Hunt", "Mike Mignola", 528, true)
+// );
 
+getLibrary();
 renderLibrary();
